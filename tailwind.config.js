@@ -6,6 +6,7 @@ module.exports = {
   ],
   theme: {
     extend: {
+
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -14,7 +15,9 @@ module.exports = {
           "background-hover": "hsl(var(--btn-background-hover))",
         },
       },
+
     },
+
   },
   plugins: [],
 };

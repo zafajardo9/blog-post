@@ -30,6 +30,10 @@
   animation: animateIn 0.3s ease 0.15s both;
 }
 
+.wrapper {
+  @apply w-full px-24;
+}
+
 @keyframes animateIn {
   from {
     opacity: 0;
