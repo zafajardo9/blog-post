@@ -22,27 +22,29 @@ export function PostForm() {
   };
 
   return (
-    <div className="w-1/2 rounded-lg shadow-md p-4 ">
-      <div className="mt-24">
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <textarea
-              className="w-full border border-gray-300 rounded-md p-2 text-neutral-900"
-              placeholder="Write your post here..."
-              value={postContent}
-              onChange={handlePostContentChange}
-              rows={4}
-            />
-          </div>
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover items-center"
-            >
-              <IoSend />
-            </button>
-          </div>
-        </form>
+    <div className="mt-20">
+      <div className="rounded-lg shadow-md p-4 border">
+        <div className="">
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <textarea
+                className="w-full border border-gray-300 rounded-md p-2 text-neutral-900"
+                placeholder="Write your post here..."
+                value={postContent}
+                onChange={handlePostContentChange}
+                rows={4}
+              />
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover items-center"
+              >
+                <IoSend />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

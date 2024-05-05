@@ -13,7 +13,7 @@ export function UserLayout({ children }: React.PropsWithChildren) {
         </nav>
       </div>
 
-      <div className="animate-in w-full bg-neutral-900">{children}</div>
+      <div className="animate-in w-full">{children}</div>
 
       {/* <Footer /> */}
     </div>
