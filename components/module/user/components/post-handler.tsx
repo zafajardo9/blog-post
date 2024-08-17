@@ -97,7 +97,7 @@ export function PostHandler({ initialPosts }: PostHandlerProps) {
     <div className="max-w-2xl mx-auto">
       <PostForm onPostCreated={handlePostCreated} />
 
-      <div className="mt-8 space-y-6">
+      <div className="my-8 space-y-6">
         {isLoading ? (
           <>
             <PostSkeleton />
