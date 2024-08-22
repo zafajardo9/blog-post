@@ -1,34 +1,54 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
+
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
 
 //ICONS
 import { IoLogInSharp, IoLogOutSharp } from "react-icons/io5";
+import { signOut } from "@/utils/auth-actions"; // Import the server action
 
-export default async function AuthButton() {
+export default function AuthButton() {
+  const [user, setUser] = useState<User | null>(null);
+  const router = useRouter();
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
 
-  const signOut = async () => {
-    "use server";
+    fetchUser();
 
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    return redirect("/login");
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase.auth]);
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/login");
   };
 
   return user ? (
     <div className="flex items-center gap-4">
       Hey, {user.email}!
-      <form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover flex items-center">
-          <IoLogOutSharp className="mr-2" />
-          Logout
-        </button>
-      </form>
+      <button
+        onClick={handleSignOut}
+        className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover flex items-center"
+      >
+        <IoLogOutSharp className="mr-2" />
+        Logout
+      </button>
     </div>
   ) : (
     <Link
