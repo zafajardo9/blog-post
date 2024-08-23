@@ -31,7 +31,7 @@
 }
 
 .wrapper {
-  @apply w-full px-24;
+  @apply w-full;
 }
 
 @keyframes animateIn {
