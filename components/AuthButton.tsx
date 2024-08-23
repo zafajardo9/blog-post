@@ -8,17 +8,22 @@ import { User } from "@supabase/supabase-js";
 
 //ICONS
 import { IoLogInSharp, IoLogOutSharp } from "react-icons/io5";
-import { signOut } from "@/utils/auth-actions"; // Import the server action
+import { signOut } from "@/utils/auth-actions";
 
 export default function AuthButton() {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      setLoading(true);
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       setUser(user);
+      setLoading(false);
     };
 
     fetchUser();
@@ -26,6 +31,7 @@ export default function AuthButton() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
+        setLoading(false);
       }
     );
 
@@ -38,6 +44,15 @@ export default function AuthButton() {
     await signOut();
     router.push("/login");
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center gap-4">
+        <div className="h-5 w-24 bg-gray-700 animate-pulse rounded"></div>
+        <div className="h-10 w-24 bg-gray-700 animate-pulse rounded"></div>
+      </div>
+    );
+  }
 
   return user ? (
     <div className="flex items-center gap-4">
