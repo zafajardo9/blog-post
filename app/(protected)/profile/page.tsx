@@ -1,8 +1,11 @@
+// app/profile/page.tsx
 "use client";
 
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
+import { IoArrowBack } from "react-icons/io5"; // Import the back arrow icon
 
 interface Profile {
   username: string | null;
@@ -17,6 +20,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const supabase = createClient();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -71,7 +75,11 @@ export default function ProfilePage() {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full h-dvh flex justify-center items-center">
+        Loading...
+      </div>
+    );
   }
 
   if (!user) {
@@ -80,7 +88,18 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto mt-10">
-      <h1 className="text-2xl font-bold mb-5">Your Profile</h1>
+      <div className="flex justify-between items-center mb-5">
+        <button
+          onClick={() => router.push("/posts")}
+          className="flex items-center text-blue-500 hover:text-blue-700"
+        >
+          <IoArrowBack className="mr-2" />
+          Back to Posts
+        </button>
+      </div>
+      <div>
+        <h1 className="text-2xl font-bold">Your Profile</h1>
+      </div>
       {editing ? (
         <form onSubmit={handleUpdate} className="space-y-4">
           <div>
@@ -92,7 +111,7 @@ export default function ProfilePage() {
               id="username"
               name="username"
               defaultValue={profile?.username || ""}
-              className="w-full p-2 border rounded bg-transparent"
+              className="w-full p-2 border rounded"
             />
           </div>
           <div>
@@ -104,7 +123,7 @@ export default function ProfilePage() {
               id="full_name"
               name="full_name"
               defaultValue={profile?.full_name || ""}
-              className="w-full p-2 border rounded bg-transparent"
+              className="w-full p-2 border rounded"
             />
           </div>
           <div>
@@ -115,7 +134,7 @@ export default function ProfilePage() {
               id="bio"
               name="bio"
               defaultValue={profile?.bio || ""}
-              className="w-full p-2 border rounded bg-transparent"
+              className="w-full p-2 border rounded"
               rows={3}
             />
           </div>
@@ -123,7 +142,7 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="px-4 py-2 bg-red-500 rounded"
+              className="px-4 py-2 bg-gray-200 rounded"
             >
               Cancel
             </button>

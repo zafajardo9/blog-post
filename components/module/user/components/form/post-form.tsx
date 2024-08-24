@@ -33,7 +33,7 @@ export function PostForm({ onPostCreated }: PostFormProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
+    <div className="max-w-2xl mx-auto">
       <div className="rounded-lg shadow-lg overflow-hidden border border-zinc-700">
         <div className="p-4 border-b border-gray-700">
           <h2 className="text-xl font-semibold text-gray-100">

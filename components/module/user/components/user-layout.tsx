@@ -11,6 +11,7 @@ export function UserLayout({ children }: React.PropsWithChildren) {
             <AuthButton />
           </div>
         </nav>
+
         <div className="mt-16">
           <div className="animate-in w-full">{children}</div>
         </div>
