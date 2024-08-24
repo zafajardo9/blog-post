@@ -7,7 +7,8 @@ export { LoginForm } from "./components/form/login-form";
 
 export { SubmitButton } from "./components/submit-button";
 
-export { PostSkeleton } from "./components/post-skeleton";
+export { PostSkeleton } from "./components/loading/post-skeleton";
+export { SpinningLoader } from "./components/loading/loading-spinner";
 
 // PROFILE PAGE
 export { ProfilePreview } from "./components/user/profile-container-component";

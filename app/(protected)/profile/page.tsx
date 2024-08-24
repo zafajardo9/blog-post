@@ -1,11 +1,12 @@
-// app/profile/page.tsx
 "use client";
 
 import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
-import { IoArrowBack } from "react-icons/io5"; // Import the back arrow icon
+import { IoArrowBack } from "react-icons/io5";
+
+import { SpinningLoader } from "@/components/module/user";
 
 interface Profile {
   username: string | null;
@@ -38,7 +39,21 @@ export default function ProfilePage() {
           .single();
 
         if (error) {
-          console.error("Error fetching profile:", error);
+          if (error.code === "PGRST116") {
+            console.log("Profile doesn't exist, creating a new one");
+            const { data: newProfile, error: insertError } = await supabase
+              .from("profiles")
+              .insert({ id: user.id })
+              .select();
+
+            if (insertError) {
+              console.error("Error creating profile:", insertError);
+            } else {
+              setProfile(newProfile[0]);
+            }
+          } else {
+            console.error("Error fetching profile:", error);
+          }
         } else {
           setProfile(data);
         }
@@ -61,23 +76,30 @@ export default function ProfilePage() {
       bio: formData.get("bio") as string,
     };
 
-    const { error } = await supabase
+    console.log("Updating profile for user:", user.id);
+    console.log("Updated profile data:", updatedProfile);
+
+    const { data, error } = await supabase
       .from("profiles")
       .update(updatedProfile)
-      .eq("id", user.id);
+      .eq("id", user.id)
+      .select();
 
     if (error) {
       console.error("Error updating profile:", error);
-    } else {
-      setProfile((prev) => (prev ? { ...prev, ...updatedProfile } : null));
+    } else if (data && data.length > 0) {
+      console.log("Profile updated successfully:", data[0]);
+      setProfile(data[0]);
       setEditing(false);
+    } else {
+      console.error("No data returned after update");
     }
   };
 
   if (loading) {
     return (
-      <div className="w-full h-dvh flex justify-center items-center">
-        Loading...
+      <div className="w-full h-dvh flex items-center justify-center">
+        <SpinningLoader />
       </div>
     );
   }
@@ -87,7 +109,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10">
+    <div className="max-w-2xl mx-auto mt-20">
       <div className="flex justify-between items-center mb-5">
         <button
           onClick={() => router.push("/posts")}
@@ -111,7 +133,7 @@ export default function ProfilePage() {
               id="username"
               name="username"
               defaultValue={profile?.username || ""}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-transparent"
             />
           </div>
           <div>
@@ -123,7 +145,7 @@ export default function ProfilePage() {
               id="full_name"
               name="full_name"
               defaultValue={profile?.full_name || ""}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-transparent"
             />
           </div>
           <div>
@@ -134,7 +156,7 @@ export default function ProfilePage() {
               id="bio"
               name="bio"
               defaultValue={profile?.bio || ""}
-              className="w-full p-2 border rounded"
+              className="w-full p-2 border rounded bg-transparent"
               rows={3}
             />
           </div>
@@ -142,7 +164,7 @@ export default function ProfilePage() {
             <button
               type="button"
               onClick={() => setEditing(false)}
-              className="px-4 py-2 bg-gray-200 rounded"
+              className="px-4 py-2 bg-red-500 rounded"
             >
               Cancel
             </button>
