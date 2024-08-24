@@ -1,5 +1,3 @@
-// components/PostSkeleton.tsx
-
 import React from "react";
 
 export const PostSkeleton: React.FC = () => (

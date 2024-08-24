@@ -33,19 +33,20 @@ export function PostForm({ onPostCreated }: PostFormProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <div className="bg-neutral-800 rounded-lg shadow-lg overflow-hidden border border-gray-700">
-        <div className="p-4 bg-neutral-900 border-b border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-100">Create a New Post</h2>
+    <div className="max-w-2xl mx-auto">
+      <div className="rounded-lg shadow-lg overflow-hidden border border-zinc-700">
+        <div className="p-4 border-b border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-100">
+            Create a New Post
+          </h2>
         </div>
         <form onSubmit={handleSubmit} className="p-4">
           <div className="mb-4">
             <textarea
-              className="w-full bg-neutral-700 border border-gray-600 rounded-lg p-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out placeholder-gray-400"
+              className="w-full bg-transparent border-gray-400 rounded-lg p-3 text-gray-100 focus:outline-none focus:ring-2 focus:ring-transparent transition duration-200 ease-in-out placeholder-gray-400 resize-none h-24"
               placeholder="What's on your mind?"
               value={postContent}
               onChange={handlePostContentChange}
-              rows={4}
               required
             />
           </div>
@@ -59,10 +60,11 @@ export function PostForm({ onPostCreated }: PostFormProps) {
             </button>
             <button
               type="submit"
-              className={`px-4 py-2 rounded-full flex items-center ${isSubmitting
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white transition duration-200 ease-in-out"
-                }`}
+              className={`px-4 py-2 rounded-full flex items-center ${
+                isSubmitting
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white transition duration-200 ease-in-out"
+              }`}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Posting..." : "Post"}
