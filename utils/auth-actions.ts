@@ -22,16 +22,19 @@ export async function signIn(formData: FormData) {
 }
 
 export async function signUp(formData: FormData) {
-  const origin = headers().get("origin");
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const supabase = createClient();
+  const domain = process.env.NEXT_PUBLIC_DOMAIN || headers().get("origin");
+
+
+
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${origin}/auth/callback`,
+      emailRedirectTo: `${domain}/auth/callback`,
     },
   });
 
