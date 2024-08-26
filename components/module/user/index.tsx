@@ -8,6 +8,7 @@ export { LoginForm } from "./components/form/login-form";
 export { SubmitButton } from "./components/submit-button";
 
 export { PostSkeleton } from "./components/loading/post-skeleton";
+export { CommentSection } from "./components/comments-component";
 export { SpinningLoader } from "./components/loading/loading-spinner";
 
 // PROFILE PAGE

@@ -15,6 +15,20 @@ const nextConfig = {
         NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY: process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY,
         NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT,
     },
+
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'Permissions-Policy',
+                        value: 'microphone=self',
+                    },
+                ],
+            },
+        ];
+    },
 }
 
 module.exports = nextConfig;
