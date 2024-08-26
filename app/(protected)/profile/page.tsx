@@ -8,13 +8,7 @@ import { IoArrowBack } from "react-icons/io5";
 
 import { SpinningLoader } from "@/components/module/user";
 
-interface Profile {
-  username: string | null;
-  full_name: string | null;
-  is_instructor: boolean;
-  bio: string | null;
-  avatar_url: string | null;
-}
+import { Profile } from "@/types";
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);

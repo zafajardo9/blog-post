@@ -6,14 +6,7 @@ import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { PersonIcon, Pencil2Icon } from "@radix-ui/react-icons";
-
-interface Profile {
-  username: string | null;
-  full_name: string | null;
-  is_instructor: boolean;
-  bio: string | null;
-  avatar_url: string | null;
-}
+import { Profile } from "@/types";
 
 export function ProfilePreview() {
   const [user, setUser] = useState<User | null>(null);

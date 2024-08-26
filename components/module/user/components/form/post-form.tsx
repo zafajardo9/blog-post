@@ -2,16 +2,18 @@
 import React, { useState, useRef, useEffect } from "react";
 import { IoSend } from "react-icons/io5";
 import { FaImage } from "react-icons/fa";
-import { createPost, Post } from "@/utils/actions/posts";
+import { MdKeyboardVoice } from "react-icons/md";
+import { createPost } from "@/utils/actions/posts";
+
+import { Post } from "@/types";
 import ImageKit from "imagekit-javascript";
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/toaster";
 
 interface PostFormProps {
   onPostCreated: (newPost: Post) => void;
 }
 
 let imagekit: ImageKit | null = null;
-
 
 export function PostForm({ onPostCreated }: PostFormProps) {
   const [postContent, setPostContent] = useState("");
@@ -20,6 +22,44 @@ export function PostForm({ onPostCreated }: PostFormProps) {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  //voice record
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+
+      const audioChunks: BlobPart[] = [];
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        setAudioBlob(audioBlob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error("Error starting recording:", error);
+      setError(
+        "Failed to start recording. Please check your microphone permissions."
+      );
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
   useEffect(() => {
     const publicKey = process.env.NEXT_PUBLIC_IMAGEKIT_PUBLIC_KEY;
     const urlEndpoint = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT;
@@ -27,7 +67,9 @@ export function PostForm({ onPostCreated }: PostFormProps) {
     const authenticationEndpoint = "/api/imagekit-auth";
 
     if (!publicKey || !urlEndpoint) {
-      setError("ImageKit configuration is missing. Please check your environment variables.");
+      setError(
+        "ImageKit configuration is missing. Please check your environment variables."
+      );
       return;
     }
 
@@ -63,11 +105,11 @@ export function PostForm({ onPostCreated }: PostFormProps) {
     }
 
     try {
-      const authResponse = await fetch('/api/imagekit-auth');
+      const authResponse = await fetch("/api/imagekit-auth");
       const authData = await authResponse.json();
 
       const uploadedImages = await Promise.all(
-        selectedFiles.map(file =>
+        selectedFiles.map((file) =>
           imagekit!.upload({
             file: file,
             fileName: file.name,
@@ -77,10 +119,13 @@ export function PostForm({ onPostCreated }: PostFormProps) {
         )
       );
 
-      const newPost = await createPost(postContent, uploadedImages.map(img => ({
-        url: img.url,
-        fileId: img.fileId,
-      })));
+      const newPost = await createPost(
+        postContent,
+        uploadedImages.map((img) => ({
+          url: img.url,
+          fileId: img.fileId,
+        }))
+      );
 
       setPostContent("");
       setSelectedFiles([]);
@@ -96,9 +141,7 @@ export function PostForm({ onPostCreated }: PostFormProps) {
   return (
     <div className="max-w-2xl mx-auto">
       {error && (
-        <div className="bg-red-500 text-white p-3 rounded-lg mb-4">
-          {error}
-        </div>
+        <div className="bg-red-500 text-white p-3 rounded-lg mb-4">{error}</div>
       )}
       <div className="rounded-lg shadow-lg overflow-hidden border border-zinc-700">
         <div className="p-4 border-b border-gray-700">
@@ -127,7 +170,11 @@ export function PostForm({ onPostCreated }: PostFormProps) {
                   />
                   <button
                     type="button"
-                    onClick={() => setSelectedFiles(files => files.filter((_, i) => i !== index))}
+                    onClick={() =>
+                      setSelectedFiles((files) =>
+                        files.filter((_, i) => i !== index)
+                      )
+                    }
                     className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
                   >
                     ×
@@ -151,14 +198,33 @@ export function PostForm({ onPostCreated }: PostFormProps) {
               className="flex items-center text-gray-400 hover:text-gray-200 transition duration-200 ease-in-out"
             >
               <FaImage className="mr-2" />
-              Add Images
             </button>
             <button
+              type="button"
+              onClick={isRecording ? stopRecording : startRecording}
+              className={`size-10 rounded-full flex justify-center items-center text-white transition duration-200 ease-in-out ${
+                isRecording
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              <MdKeyboardVoice />
+            </button>
+            {audioBlob && (
+              <audio
+                controls
+                src={URL.createObjectURL(audioBlob)}
+                className="ml-2"
+              />
+            )}
+
+            <button
               type="submit"
-              className={`px-4 py-2 rounded-full flex items-center ${isSubmitting
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white transition duration-200 ease-in-out"
-                }`}
+              className={`px-4 py-2 text-sm rounded-full flex items-center ${
+                isSubmitting
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700 text-white transition duration-200 ease-in-out"
+              }`}
               disabled={isSubmitting}
             >
               {isSubmitting ? "Posting..." : "Post"}
