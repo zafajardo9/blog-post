@@ -12,14 +12,15 @@ export interface Post {
   created_at: string;
   posts: string;
   user_id: string;
+  images: { url: string; fileId: string }[];
 }
 
-export async function createPost(content: string): Promise<Post> {
+export async function createPost(content: string, images: { url: string; fileId: string }[]): Promise<Post> {
   const supabase = createClient();
 
   const { data, error } = await supabase
     .from('posts')
-    .insert([{ posts: content }])
+    .insert([{ posts: content, images: images }])
     .select()
     .single();
 
@@ -27,8 +28,6 @@ export async function createPost(content: string): Promise<Post> {
     console.error('Error inserting post:', error);
     throw error;
   }
-
-  revalidatePath('/posts');
 
   return data as Post;
 }
