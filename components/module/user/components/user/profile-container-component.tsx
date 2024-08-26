@@ -10,6 +10,7 @@ import { PersonIcon, Pencil2Icon } from "@radix-ui/react-icons";
 interface Profile {
   username: string | null;
   full_name: string | null;
+  is_instructor: boolean;
   bio: string | null;
   avatar_url: string | null;
 }
@@ -32,7 +33,7 @@ export function ProfilePreview() {
       if (user) {
         const { data, error } = await supabase
           .from("profiles")
-          .select("*")
+          .select("*, is_instructor")
           .eq("id", user.id)
           .single();
 
@@ -87,6 +88,35 @@ export function ProfilePreview() {
           <strong>Bio:</strong>{" "}
           {profile?.bio ? `${profile.bio.substring(0, 50)}...` : "Not set"}
         </p>
+
+        <div className="my-4">
+          {profile?.is_instructor && (
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 shadow-sm">
+              <svg
+                className="mr-1.5 h-4 w-4 text-blue-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 14l9-5-9-5-9 5 9 5z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 20v-6"
+                />
+              </svg>
+              Instructor
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );
