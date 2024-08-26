@@ -4,20 +4,15 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState, useCallback } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
-import { Post, readPosts } from "@/utils/actions/posts";
-import { PostForm, PostSkeleton } from "@/components/module/user";
+import { readPosts } from "@/utils/actions/posts";
+import { Post, PostWithUser, PostHandlerProps } from "@/types";
+import {
+  PostForm,
+  PostSkeleton,
+  CommentSection,
+} from "@/components/module/user";
 import { User } from "@supabase/supabase-js";
-import Image from 'next/image';
-
-interface PostHandlerProps {
-  initialPosts: Post[];
-}
-
-interface PostWithUser extends Post {
-  user_email: string | null;
-  images: { url: string; fileId: string }[];
-}
-
+import Image from "next/image";
 
 export function PostHandler({ initialPosts }: PostHandlerProps) {
   const [posts, setPosts] = useState<PostWithUser[]>([]);
@@ -134,17 +129,18 @@ export function PostHandler({ initialPosts }: PostHandlerProps) {
                   </div>
                 </div>
                 <div className="text-blue-400 text-sm">
-                  by {" "}
-                  {post.user_email || "Anonymous User"}
+                  by {post.user_email || "Anonymous User"}
                 </div>
                 <div>
                   <p className="text-gray-100 my-4">{post.posts}</p>
 
-
                   {post.images && post.images.length > 0 && (
                     <div className="mb-4 grid grid-cols-2 gap-2">
                       {post.images.map((image, index) => (
-                        <div key={image.fileId} className="relative aspect-square">
+                        <div
+                          key={image.fileId}
+                          className="relative aspect-square"
+                        >
                           <Image
                             src={image.url}
                             alt={`Image ${index + 1}`}
@@ -157,7 +153,10 @@ export function PostHandler({ initialPosts }: PostHandlerProps) {
                     </div>
                   )}
                 </div>
-
+                <CommentSection
+                  postId={post.id}
+                  currentUserId={currentUser?.id}
+                />
               </div>
             </div>
           ))
