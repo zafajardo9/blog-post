@@ -129,7 +129,7 @@ export function PostHandler({ initialPosts }: PostHandlerProps) {
                   </div>
                 </div>
                 <div className="text-blue-400 text-sm">
-                  by {post.user_email || "Anonymous User"}
+                  by {" "} {post.user_email || "Anonymous User"}
                 </div>
                 <div>
                   <p className="text-gray-100 my-4">{post.posts}</p>
