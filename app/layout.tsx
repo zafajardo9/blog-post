@@ -1,5 +1,6 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import { initAmplitude } from '../lib/amplitude';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -16,6 +17,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+  initAmplitude();
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
@@ -23,6 +26,9 @@ export default function RootLayout({
           {children}
         </main>
       </body>
+
+
     </html>
+
   );
 }
