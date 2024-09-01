@@ -1,6 +1,7 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { initAmplitude } from '../lib/amplitude';
+import { MatomoAnalytics } from "@/components/MatomoAnalytics";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -20,7 +21,9 @@ export default function RootLayout({
 
   initAmplitude();
   return (
+
     <html lang="en" className={GeistSans.className}>
+      <MatomoAnalytics />
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
           {children}
