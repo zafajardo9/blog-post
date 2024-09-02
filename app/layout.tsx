@@ -2,6 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { initAmplitude } from '../lib/amplitude';
 import { MatomoAnalytics } from "@/components/MatomoAnalytics";
+import { GoogleTag } from "@/components/GoogleTag";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -24,6 +25,7 @@ export default function RootLayout({
 
     <html lang="en" className={GeistSans.className}>
       <MatomoAnalytics />
+      <GoogleTag />
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
           {children}
