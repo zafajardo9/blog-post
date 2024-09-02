@@ -1,8 +1,8 @@
-// components/GoogleTag.tsx
+"use client"
+
 import Script from 'next/script'
 import { useEffect } from 'react'
 
-// Extend the Window interface to include dataLayer
 declare global {
     interface Window {
         dataLayer: any[]
