@@ -4,6 +4,10 @@ import { initAmplitude } from '../lib/amplitude';
 import { MatomoAnalytics } from "@/components/MatomoAnalytics";
 import { GoogleTag } from "@/components/GoogleTag";
 
+import Script from 'next/script'
+
+
+
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -29,6 +33,10 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
           {children}
+          <Script
+            src="https://website-analytics-mu.vercel.app/tracker.js"
+            strategy="afterInteractive"
+          />
         </main>
       </body>
 
